@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Eat Me?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f5d0f4; /* Background color */
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            position: relative;
+            text-align: center;
+        }
+
+        .flirty-message {
+            font-size: 1.5rem;
+            color: #ff69b4;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .chocolate-img {
+            width: 300px;
+            height: 300px;
+            border-radius: 15px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .chocolate-img:hover {
+            transform: scale(1.05);
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        button {
+            background-color: #ff69b4;
+            color: white;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff1493;
+        }
+
+        .no-button {
+            background-color: #d3d3d3;
+            color: #888;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Replace the image URL with your own image -->
+        <img src="me.jpeg" alt="Flirty Chocolate" class="chocolate-img">
+        <div class="flirty-message">
+            "Bujji, will you eat me? 🍫💋"
+        </div>
+        <div class="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn" class="no-button">No</button>
+        </div>
+        <div id="responseMessage" class="hidden">
+            <p class="flirty-message">Yay! You chose YES! 😘 Now, let ne body na body chocolate eskoni cheskundam hehee! 🍫💖</p>
+        </div>
+    </div>
+
+    <script>
+        // Functionality for Yes and No buttons
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const responseMessage = document.getElementById('responseMessage');
+
+        // If they click Yes, show a response message
+        yesBtn.addEventListener('click', () => {
+            responseMessage.classList.remove('hidden');
+            noBtn.disabled = true; // Disable the No button once Yes is clicked
+        });
+
+        // If they click No, make the message disappear (a little funny interaction)
+        noBtn.addEventListener('click', () => {
+            const flirtyMessage = document.querySelector('.flirty-message');
+            flirtyMessage.innerHTML = "niku option etamla muskoni lick me or else i will.....my dark chocolate😏";
+            noBtn.classList.add('hidden'); // Hide No button after clicking
+        });
+    </script>
+</body>
+</html>
