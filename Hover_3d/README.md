@@ -1,5 +1,3 @@
----
-
 # 3D Hover Cards
 
 This project demonstrates a 3D card hover effect using HTML and CSS. Each card contains images and has an interactive hover effect that transforms the card, revealing more content.
@@ -9,7 +7,7 @@ This project demonstrates a 3D card hover effect using HTML and CSS. Each card c
 - **3D Hover Effect:** When hovering over each card, it rotates and displays additional elements.
 - **Responsive Design:** The card sizes are flexible and adjust according to the screen size.
 - **Smooth Transitions:** All animations and transitions are smooth and responsive.
-  
+
 ## How to Use
 
 1. Clone or download the repository.
@@ -27,5 +25,3 @@ This project demonstrates a 3D card hover effect using HTML and CSS. Each card c
 - `index.html` - The main HTML file.
 - `style.css` - The stylesheet for the layout and animations.
 - `Images/` - Folder containing images used in the cards.
-
----
