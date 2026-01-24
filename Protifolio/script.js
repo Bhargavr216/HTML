@@ -139,10 +139,51 @@ async function loadRepoGrid(gridSelector, owner, repo, tag, icon, path) {
   }
 }
 
+async function loadMtechGrid(gridSelector) {
+  const grid = document.querySelector(gridSelector);
+  if (!grid) return;
+  try {
+    const base = 'https://api.github.com/repos/Bhargavr216/Mtech/contents/Sem1/full_stack';
+    const res = await fetch(base);
+    if (!res.ok) throw new Error('Failed to load MTech contents');
+    const items = await res.json();
+    const dirs = items.filter(i => i.type === 'dir');
+    const cards = [];
+    for (const d of dirs) {
+      let title = d.name;
+      try {
+        const r = await fetch(`${base}/${d.name}/README.md`);
+        if (r.ok) {
+          const f = await r.json();
+          if (f && f.content) {
+            const text = atob(f.content.replace(/\n/g, ''));
+            const m = text.match(/^#\s*(.+)$/m);
+            if (m && m[1]) title = m[1].trim();
+          }
+        }
+      } catch {}
+      const buttons = `<a href="${d.html_url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">View Source Code</a>`;
+      cards.push(`
+        <div class="card" data-tag="mtech">
+          <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+          <h3>${title}</h3>
+          <p>${d.name}</p>
+          <div class="card-buttons">
+            ${buttons}
+          </div>
+        </div>
+      `);
+    }
+    grid.innerHTML = cards.join('');
+  } catch (e) {
+    grid.innerHTML = '<p style="color:#c62828">Unable to load MTech projects right now.</p>';
+  }
+}
+
 loadRepoGrid('#testing-repo-grid', 'Bhargavr216', 'TESTING', 'testing', 'fas fa-vial');
 loadRepoGrid('#java-repo-grid', 'Bhargavr216', 'JavaProjects', 'java', 'fas fa-coffee');
 loadRepoGrid('#html-repo-grid', 'Bhargavr216', 'HTML', 'html', 'fas fa-folder-open');
-loadRepoGrid('#mtech-repo-grid', 'Bhargavr216', 'Mtech', 'mtech', 'fas fa-graduation-cap', 'Sem1/full_stack');
+loadMtechGrid('#mtech-repo-grid');
 
 // Re-apply filter after dynamic loads complete
 Promise.allSettled([]).then(() => applyFilter(currentFilter));
