@@ -150,24 +150,13 @@ async function loadMtechGrid(gridSelector) {
     const dirs = items.filter(i => i.type === 'dir');
     const cards = [];
     for (const d of dirs) {
-      let title = d.name;
-      try {
-        const r = await fetch(`${base}/${d.name}/README.md`);
-        if (r.ok) {
-          const f = await r.json();
-          if (f && f.content) {
-            const text = atob(f.content.replace(/\n/g, ''));
-            const m = text.match(/^#\s*(.+)$/m);
-            if (m && m[1]) title = m[1].trim();
-          }
-        }
-      } catch {}
+      const title = `Sem1/full_stack/${d.name}`;
       const buttons = `<a href="${d.html_url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">View Source Code</a>`;
       cards.push(`
         <div class="card" data-tag="mtech">
           <div class="icon"><i class="fas fa-graduation-cap"></i></div>
           <h3>${title}</h3>
-          <p>${d.name}</p>
+          <p>MTech experiment</p>
           <div class="card-buttons">
             ${buttons}
           </div>
