@@ -57,6 +57,22 @@ function applyFilter(tag) {
     const matchText = card.textContent.toLowerCase().includes(q);
     card.style.display = matchTag && matchText ? '' : 'none';
   });
+
+  // Toggle repo sections and their titles
+  const sections = [
+    { id: '#testing-repo-grid', tag: 'testing' },
+    { id: '#java-repo-grid', tag: 'java' },
+    { id: '#html-repo-grid', tag: 'html' },
+    { id: '#mtech-repo-grid', tag: 'mtech' },
+  ];
+  sections.forEach(s => {
+    const grid = document.querySelector(s.id);
+    if (!grid) return;
+    const titleEl = grid.previousElementSibling?.classList.contains('title') ? grid.previousElementSibling : null;
+    const show = tag === 'all' || tag === s.tag;
+    grid.style.display = show ? '' : 'none';
+    if (titleEl) titleEl.style.display = show ? '' : 'none';
+  });
 }
 
 filterButtons.forEach(btn => btn.addEventListener('click', () => {
