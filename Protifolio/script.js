@@ -37,6 +37,17 @@ const searchInput = document.querySelector('#search');
 const filterButtons = document.querySelectorAll('[data-filter]');
 let currentFilter = 'all';
 
+// Ensure MTech filter button exists even if HTML is cached/old
+const filtersContainer = document.querySelector('.filters');
+let mtechBtn = filtersContainer?.querySelector('[data-filter="mtech"]');
+if (filtersContainer && !mtechBtn) {
+  mtechBtn = document.createElement('button');
+  mtechBtn.className = 'btn btn-outline';
+  mtechBtn.setAttribute('data-filter', 'mtech');
+  mtechBtn.textContent = 'MTech';
+  filtersContainer.appendChild(mtechBtn);
+}
+
 function applyFilter(tag) {
   currentFilter = tag;
   const q = (searchInput?.value || '').toLowerCase();
@@ -56,6 +67,15 @@ filterButtons.forEach(btn => btn.addEventListener('click', () => {
 const allBtn = document.querySelector('[data-filter="all"]');
 if (allBtn) allBtn.classList.add('active');
 if (searchInput) searchInput.addEventListener('input', () => applyFilter(currentFilter));
+
+// Attach listener for dynamically ensured MTech button
+if (mtechBtn) {
+  mtechBtn.addEventListener('click', () => {
+    [...filterButtons, mtechBtn].forEach(b => b.classList.remove('active'));
+    mtechBtn.classList.add('active');
+    applyFilter('mtech');
+  });
+}
 
 const waBtn = document.querySelector('#wa-send');
 if (waBtn) {
