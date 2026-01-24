@@ -165,7 +165,25 @@ async function loadMtechGrid(gridSelector) {
     }
     grid.innerHTML = cards.join('');
   } catch (e) {
-    grid.innerHTML = '<p style="color:#c62828">Unable to load MTech projects right now.</p>';
+    const fallback = [
+      'experiment1','experiment2','experiment3','experiment4','experiment5',
+      'experiment6','experiment7','experiment8','experiment9','experiment10',
+      'experiment11','experiment12','experiment13','experiment14','experiment15'
+    ];
+    grid.innerHTML = fallback.map(name => {
+      const pathTitle = `Sem1/full_stack/${name}`;
+      const ghUrl = `https://github.com/Bhargavr216/Mtech/tree/main/Sem1/full_stack/${name}`;
+      return `
+        <div class="card" data-tag="mtech">
+          <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+          <h3>${pathTitle}</h3>
+          <p>MTech experiment</p>
+          <div class="card-buttons">
+            <a href="${ghUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">View Source Code</a>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 }
 
