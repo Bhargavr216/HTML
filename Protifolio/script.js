@@ -67,11 +67,13 @@ if (waBtn) {
   });
 }
 
-async function loadRepoGrid(gridSelector, owner, repo, tag, icon) {
+async function loadRepoGrid(gridSelector, owner, repo, tag, icon, path) {
   const grid = document.querySelector(gridSelector);
   if (!grid) return;
   try {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents`);
+    const base = `https://api.github.com/repos/${owner}/${repo}/contents`;
+    const url = path ? `${base}/${path}` : base;
+    const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to load repository contents');
     const items = await res.json();
     const dirs = items.filter(i => i.type === 'dir');
@@ -104,6 +106,7 @@ async function loadRepoGrid(gridSelector, owner, repo, tag, icon) {
 loadRepoGrid('#testing-repo-grid', 'Bhargavr216', 'TESTING', 'testing', 'fas fa-vial');
 loadRepoGrid('#java-repo-grid', 'Bhargavr216', 'JavaProjects', 'java', 'fas fa-coffee');
 loadRepoGrid('#html-repo-grid', 'Bhargavr216', 'HTML', 'html', 'fas fa-folder-open');
+loadRepoGrid('#mtech-repo-grid', 'Bhargavr216', 'Mtech', 'mtech', 'fas fa-graduation-cap', 'Sem1/full_stack');
 
 // Re-apply filter after dynamic loads complete
 Promise.allSettled([]).then(() => applyFilter(currentFilter));
