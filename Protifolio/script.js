@@ -139,58 +139,12 @@ async function loadRepoGrid(gridSelector, owner, repo, tag, icon, path) {
   }
 }
 
-async function loadMtechGrid(gridSelector) {
-  const grid = document.querySelector(gridSelector);
-  if (!grid) return;
-  try {
-    const base = 'https://api.github.com/repos/Bhargavr216/Mtech/contents/Sem1/full_stack';
-    const res = await fetch(base);
-    if (!res.ok) throw new Error('Failed to load MTech contents');
-    const items = await res.json();
-    const dirs = items.filter(i => i.type === 'dir');
-    const cards = [];
-    for (const d of dirs) {
-      const title = `Sem1/full_stack/${d.name}`;
-      const buttons = `<a href="${d.html_url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">View Source Code</a>`;
-      cards.push(`
-        <div class="card" data-tag="mtech">
-          <div class="icon"><i class="fas fa-graduation-cap"></i></div>
-          <h3>${title}</h3>
-          <p>MTech experiment</p>
-          <div class="card-buttons">
-            ${buttons}
-          </div>
-        </div>
-      `);
-    }
-    grid.innerHTML = cards.join('');
-  } catch (e) {
-    const fallback = [
-      'experiment1','experiment2','experiment3','experiment4','experiment5',
-      'experiment6','experiment7','experiment8','experiment9','experiment10',
-      'experiment11','experiment12','experiment13','experiment14','experiment15'
-    ];
-    grid.innerHTML = fallback.map(name => {
-      const pathTitle = `Sem1/full_stack/${name}`;
-      const ghUrl = `https://github.com/Bhargavr216/Mtech/tree/main/Sem1/full_stack/${name}`;
-      return `
-        <div class="card" data-tag="mtech">
-          <div class="icon"><i class="fas fa-graduation-cap"></i></div>
-          <h3>${pathTitle}</h3>
-          <p>MTech experiment</p>
-          <div class="card-buttons">
-            <a href="${ghUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">View Source Code</a>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-}
+// (Reverted) Use generic loader for MTech repo path
 
 loadRepoGrid('#testing-repo-grid', 'Bhargavr216', 'TESTING', 'testing', 'fas fa-vial');
 loadRepoGrid('#java-repo-grid', 'Bhargavr216', 'JavaProjects', 'java', 'fas fa-coffee');
 loadRepoGrid('#html-repo-grid', 'Bhargavr216', 'HTML', 'html', 'fas fa-folder-open');
-loadMtechGrid('#mtech-repo-grid');
+loadRepoGrid('#mtech-repo-grid', 'Bhargavr216', 'Mtech', 'mtech', 'fas fa-graduation-cap', 'Sem1/full_stack');
 
 // Re-apply filter after dynamic loads complete
 Promise.allSettled([]).then(() => applyFilter(currentFilter));
