@@ -143,36 +143,30 @@ async function loadMtechGrid(gridSelector) {
   const grid = document.querySelector(gridSelector);
   if (!grid) return;
   try {
-    const base = 'https://api.github.com/repos/Bhargavr216/Mtech/contents/Sem1/full_stack';
-    const res = await fetch(base);
-    if (!res.ok) throw new Error('Failed to load MTech contents');
-    const items = await res.json();
-    const dirs = items.filter(i => i.type === 'dir');
+    const sem1Res = await fetch('https://api.github.com/repos/Bhargavr216/Mtech/contents/Sem1');
+    if (!sem1Res.ok) throw new Error('Failed to load Sem1');
+    const sem1Items = await sem1Res.json();
+    const sem1Dirs = sem1Items.filter(i => i.type === 'dir');
     const cards = [];
-    for (const d of dirs) {
-      let title = d.name;
-      try {
-        const r = await fetch(`${base}/${d.name}/README.md`);
-        if (r.ok) {
-          const f = await r.json();
-          if (f && f.content) {
-            const text = atob(f.content.replace(/\n/g, ''));
-            const m = text.match(/^#\s*(.+)$/m);
-            if (m && m[1]) title = m[1].trim();
-          }
-        }
-      } catch {}
-      const buttons = `<a href="${d.html_url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">View Source Code</a>`;
-      cards.push(`
-        <div class="card" data-tag="mtech">
-          <div class="icon"><i class="fas fa-graduation-cap"></i></div>
-          <h3>${title}</h3>
-          <p>${d.name}</p>
-          <div class="card-buttons">
-            ${buttons}
+    for (const s of sem1Dirs) {
+      const res = await fetch(`https://api.github.com/repos/Bhargavr216/Mtech/contents/Sem1/${s.name}`);
+      if (!res.ok) continue;
+      const items = await res.json();
+      const dirs = items.filter(i => i.type === 'dir');
+      for (const d of dirs) {
+        const title = `Sem1/${s.name}/${d.name}`;
+        const buttons = `<a href="${d.html_url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm">View Source Code</a>`;
+        cards.push(`
+          <div class="card" data-tag="mtech">
+            <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+            <h3>${title}</h3>
+            <p>MTech project</p>
+            <div class="card-buttons">
+              ${buttons}
+            </div>
           </div>
-        </div>
-      `);
+        `);
+      }
     }
     grid.innerHTML = cards.join('');
   } catch (e) {
