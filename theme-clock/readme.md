@@ -1,204 +1,396 @@
-Perfect 👍 I understand **exactly** what you want now.
 
-You like the **content, flow, tone, and exam-readiness** of that version —
-you **only want the EXTRA (first) image removed** for each topic, so that:
-
-> ✔ **ONE topic = ONE drawable image**
-> ✔ Same wording
-> ✔ Same structure
-> ✔ Same 10-marks coverage
-
-Below is the **cleaned version** with **ONLY ONE image per topic**, nothing else changed.
+# 📌 UNIT–I
 
 ---
 
-Alright 👍
-Below is the **FINAL, EXAM-READY 10-MARKS ANSWER** for
-**UNIT–I – Question 1**, written **exactly as you should study and reproduce in the exam**, with:
+## **UNIT–I | QUESTION–1**
 
-* ✔ Proper **definition**
-* ✔ **Expanded explanations** (not short phrases)
-* ✔ **ONLY drawable block-diagram reference images**
-* ✔ **No fancy wording**, fully examiner-friendly
+### Architectures of Distributed Systems
 
----
+**Client–Server** – central service
 
-# **UNIT–I – Question 1**
+```
+Client → Server ← Client
+```
 
-## **Explain the architectures of distributed systems and system architecture types with neat diagrams**
+**Peer-to-Peer** – equal nodes
 
----
+```
+P ─ P
+│ X │
+P ─ P
+```
 
-## **Definition of Distributed System**
+**Multi-Tier** – layered design
 
-A **Distributed System** is a collection of independent computers connected by a network that communicate and coordinate with each other through message passing. Even though the computers are geographically separated, the system appears to users as a **single integrated system**.
+```
+UI → Logic → Data
+```
 
----
+**Service Oriented Architecture** – loose services
 
-## **Need for Distributed System Architecture**
-
-Distributed system architecture specifies:
-
-* How system components are **organized**
-* How nodes **communicate and coordinate**
-* How **resources are shared**
-* How the system achieves **scalability, fault tolerance, and transparency**
-
-A well-defined architecture improves **system performance, reliability, and manageability**.
+**Centralized** – single control
+**Decentralized** – autonomous nodes
+**Hybrid** – mixed control
 
 ---
 
-## **Architectures of Distributed Systems**
+## **UNIT–I | QUESTION–2**
+
+### Issues and Limitations
+
+**Heterogeneity** – different systems
+**Transparency** – hidden distribution
+**Scalability** – growth support
+**Fault tolerance** – failure handling
+**Security** – data protection
+
+**No global clock** – time issue
+**Partial failures** – node crashes
 
 ---
 
-## **1. Client–Server Architecture**
+## **UNIT–I | QUESTION–3**
 
-In the **Client–Server architecture**, the system is divided into:
+### Communication Networks and Primitives
 
-* **Clients** that request services
-* **Servers** that provide services and manage shared resources such as files, databases, and applications
+**Local Area Network** – short distance
+**Wide Area Network** – long distance
 
-Clients do not communicate directly with each other. All communication takes place through the server.
+**Bus / Star / Ring** – topologies
 
-![Image](https://images.openai.com/static-rsc-3/kOtY3ju7qcoL-12nDtIuB8-vf1ycKp1Eq2vC4HZFOQ4Sgrw_QMWOoUKmD9qzPQ78zYRwVs7xjGyu5-u7QLv95W9tg1KDtpZZAQ1MrjxZ_aA?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-3/gryOupAPY8rLIgwNHDxnFz_dyE_IQSOlSooc10pw4aQzXFcjadw_R4wudAWPIDhPJw0XXwddUfnPCuoU0RPdPHWloFR-LvN31lLfLHxnuTM?purpose=fullsize)
-
-### **Explanation**
-
-The client sends a request to the server for data or services. The server processes the request, performs the required computation or database operation, and sends the response back to the client. This centralized approach simplifies control and coordination.
-
-### **Advantages**
-
-* **Centralized administration**: Since all data and services are maintained at the server, tasks such as updates, backups, and access control can be performed easily.
-* **Data consistency**: All clients access the same server, ensuring that data remains consistent and synchronized.
-* **Simplified system design**: Clients handle only user interaction, while servers manage computation and storage.
-
-### **Disadvantages**
-
-* **Single point of failure**: Failure of the server can bring down the entire system.
-* **Performance bottleneck**: As the number of clients increases, server load also increases.
-* **Limited scalability**: Scaling often requires expensive server upgrades.
+**Message Passing** – send/receive
+**Remote Procedure Call** – remote call
+**Stream Communication** – continuous data
+**Group Communication** – multicast
 
 ---
 
-## **2. Peer-to-Peer (P2P) Architecture**
+## **UNIT–I | QUESTION–4**
 
-In **Peer-to-Peer architecture**, all nodes are called **peers**, and each peer can act as both a client and a server. There is **no central controlling node**.
+### Logical Clocks and Causality
 
-![Image](https://images.openai.com/static-rsc-3/PoKYh8s_JdT6IEPEdtRahI_x9kPKM4jQ47grlUNBSKCm89C0gBI8_7hwcX-6JPmKp3rb0wA1nYU4fyXu4x3fdazH5n6GdADPrhwZUn_LK0U?purpose=fullsize)
+**Lamport Clock** – event ordering
+**Happens-Before** – causal relation
 
-![Image](https://images.wondershare.com/edrawmax/templates/network-diagram-for-p2p.png)
+**Vector Clock** – causality + concurrency
 
-### **Explanation**
+**Causal Ordering** – correct order
 
-Each peer directly communicates with other peers to share resources such as files, processing power, or storage. Since responsibilities are distributed, the system does not depend on a single node.
-
-### **Advantages**
-
-* **High scalability**: Adding new peers increases system resources.
-* **Fault tolerance**: Failure of one peer does not affect the overall system.
-* **Efficient resource sharing**: Resources are evenly distributed across the network.
-
-### **Disadvantages**
-
-* **Complex coordination**: Managing synchronization and consistency among peers is difficult.
-* **Security issues**: Lack of central control makes security enforcement challenging.
-* **Unpredictable performance**: Performance depends on peer availability.
+```
+P1 → msg → P2
+```
 
 ---
 
-## **3. Multi-Tier (Three-Tier) Architecture**
+## **UNIT–I | QUESTION–5**
 
-In **Multi-Tier architecture**, the system is divided into multiple logical layers, each performing a specific function.
+### Global State and Termination
 
-Common tiers include:
+**Global State** – local + messages
 
-* Presentation Tier (User Interface)
-* Application Tier (Business Logic)
-* Data Tier (Database)
+**Consistent Cut** – valid snapshot
+**Inconsistent Cut** – invalid snapshot
 
-![Image](https://images.openai.com/static-rsc-3/hXq2m17N6xtjn16oeoQPTkKkBU2yOkQJzEVpprDmCkqyNx84qlx8mBEmG6ldwscyomaSBhb5dFAwu1JxaC4z6Eu2tutN1W-0w18dRhR_RKU?purpose=fullsize)
-
-![Image](https://www.researchgate.net/publication/277187696/figure/fig1/AS%3A613958725672966%401523390575480/tier-architecture.png)
-
-### **Explanation**
-
-The presentation tier handles user interaction and forwards requests to the application tier. The application tier processes the business logic and interacts with the data tier to store or retrieve data. Each tier communicates only with adjacent tiers.
-
-### **Advantages**
-
-* **Separation of concerns**: Each tier has a specific responsibility, making the system easier to modify and maintain.
-* **Scalability**: Individual tiers can be scaled independently based on workload.
-* **Improved security**: Direct access to the database is restricted.
-
-### **Disadvantages**
-
-* **Increased system complexity**
-* **Communication overhead** between tiers
+**Termination** – passive + no messages
 
 ---
 
-## **System Architecture Types**
+# 📌 UNIT–II
 
 ---
 
-## **1. Centralized Architecture**
+## **UNIT–II | QUESTION–1**
 
-All processing and data management are handled by a **single central system**.
+### Distributed Mutual Exclusion
 
-![Image](https://www.researchgate.net/publication/330485258/figure/fig2/AS%3A725701149863936%401550032045501/Architecture-of-Centralized-Database-System.ppm)
+**Critical Section** – shared resource
 
-![Image](https://www.tutorialspoint.com/dbms/images/centralized_and_client_server_architecture.jpg)
+**Mutual exclusion** – one process
+**Progress** – no deadlock
+**Fairness** – no starvation
 
-* Easy to control and manage
-* Poor fault tolerance
-* Failure of the central system affects the entire system
-
----
-
-## **2. Decentralized Architecture**
-
-Multiple autonomous systems cooperate without relying on a single central controller.
-
-![Image](https://images.openai.com/static-rsc-3/saQtZkxPz3AniCnyeVlkGIo3u178UHXG6unrC4j8vRqDNtKKFzOA0_LduGLVjyB_hRq0J8kaG-X7SedFCG-aHdmKhbGupU9n3WqyskuNksQ?purpose=fullsize)
-
-![Image](https://www.researchgate.net/publication/345477110/figure/fig1/AS%3A11431281128351064%401679360559225/Network-structures-of-centralized-system-left-and-decentralized-system-right.png)
-
-* Improved reliability and scalability
-* Load is distributed among nodes
-* Coordination mechanisms are more complex
+**Non-Token** – permission based
+**Token-Based** – token ownership
 
 ---
 
-## **3. Hybrid Architecture**
+## **UNIT–II | QUESTION–2**
 
-Combines features of both centralized and decentralized architectures.
+### Lamport’s Mutual Exclusion Algorithm
 
-![Image](https://www.researchgate.net/publication/326685025/figure/fig5/AS%3A962180971241490%401606413228827/A-distributed-system-based-on-the-hybrid-model.png)
+**Logical clocks** – ordering
 
-![Image](https://www.researchgate.net/publication/298250159/figure/fig12/AS%3A635707882221576%401528575978685/Hybrid-system-architecture-model-and-an-example-architecture.png)
+**Request** – ask permission
+**Reply** – grant permission
+**Release** – exit section
 
-* Balances performance and fault tolerance
-* Widely used in modern distributed systems
+**Rule** – queue head + replies
 
----
-
-## **Conclusion**
-
-Distributed system architectures provide structured approaches to designing systems that support **resource sharing, scalability, fault tolerance, and transparency**. The selection of an appropriate architecture depends on application requirements, system size, performance needs, and reliability constraints.
-
----
-
-### ✅ **Exam Assurance**
-
-✔ This answer is **perfect for 10 marks**
-✔ **Exactly one diagram per topic**
-✔ Diagrams are **fully drawable in exam**
-✔ Matches **JNTU / autonomous valuation style**
+```
+REQ → REP → CS → REL
+```
 
 ---
 
-If you want, next we’ll do **all remaining units in this SAME exact format** 🔥
-Just say the unit & question number 👍
+## **UNIT–II | QUESTION–3**
+
+### Ricart–Agrawala Algorithm
+
+**Optimized Lamport** – fewer messages
+
+**Request / Reply** – only messages
+
+**Deferred reply** – timestamp rule
+
+```
+REQ ↔ REP
+```
+
+---
+
+## **UNIT–II | QUESTION–4**
+
+### Maekawa’s Algorithm
+
+**Quorum** – subset permission
+
+**Intersection** – common member
+
+**Request / Grant** – permission
+
+**Fail / Inquire / Yield** – conflict handling
+
+```
+Q1 ∩ Q2 ≠ Ø
+```
+
+---
+
+## **UNIT–II | QUESTION–5**
+
+### Token-Based Mutual Exclusion
+
+**Single Token** – access control
+
+**Suzuki–Kasami** – broadcast request
+**Singhal** – reduced broadcast
+**Raymond** – tree-based
+
+```
+Token → Process
+```
+
+---
+
+# 📌 UNIT–III
+
+---
+
+## **UNIT–III | QUESTION–1**
+
+### Deadlock Basics
+
+**Mutual exclusion** – non-shareable
+**Hold and wait** – waiting resource
+**No preemption** – force not allowed
+**Circular wait** – cycle exists
+
+**Prevention / Avoidance / Detection**
+
+---
+
+## **UNIT–III | QUESTION–2**
+
+### Deadlock Detection Issues
+
+**No global state** – partial view
+**Message delay** – stale info
+**Phantom deadlock** – false detection
+
+**Recovery** – kill / rollback
+
+---
+
+## **UNIT–III | QUESTION–3**
+
+### Control Organizations
+
+**Centralized** – single coordinator
+**Distributed** – no coordinator
+**Hierarchical** – cluster based
+
+---
+
+## **UNIT–III | QUESTION–4**
+
+### Centralized Deadlock Detection
+
+**Global Wait-For Graph** – dependency
+
+**Cycle** – deadlock
+
+```
+P1 → P2 → P1
+```
+
+---
+
+## **UNIT–III | QUESTION–5**
+
+### Distributed and Hierarchical Deadlock Detection
+
+### Distributed Detection
+
+**Concept** – no controller
+**Working** – probe messages
+
+```
+P1 → P2 → P3
+↑           |
+└───────────┘
+```
+
+**Limitation** – message overhead
+
+---
+
+### Hierarchical Detection
+
+**Concept** – cluster based
+**Working** – local then global
+
+```
+        Global Controller
+        /              \
+   Local C1          Local C2
+```
+
+**Advantage** – scalable
+**Limitation** – complex
+
+---
+
+# 📌 UNIT–IV
+
+---
+
+## **UNIT–IV | QUESTION–1**
+
+### Multiprocessor Systems
+
+**Performance** – parallelism
+**Reliability** – graceful failure
+
+**Shared Memory** – common memory
+**Bus-Based** – single bus
+**Crossbar** – multiple paths
+**Non-Uniform Memory Access** – local faster
+
+---
+
+## **UNIT–IV | QUESTION–2**
+
+### Operating System Structures
+
+**Master–Slave** – single control
+**Symmetric Multiprocessing** – all equal
+**Asymmetric Multiprocessing** – fixed roles
+
+---
+
+## **UNIT–IV | QUESTION–3**
+
+### Threads and Synchronization
+
+**Threads** – lightweight process
+
+**Mutex** – exclusive lock
+**Semaphore** – counter control
+**Spinlock** – busy wait
+**Barrier** – phase sync
+
+---
+
+## **UNIT–IV | QUESTION–4**
+
+### Processor Scheduling
+
+**Load balancing** – equal work
+**Processor affinity** – cache reuse
+
+**Global Queue** – shared
+**Per-CPU Queue** – local
+
+---
+
+## **UNIT–IV | QUESTION–5**
+
+### Distributed File Systems
+
+**Client–Server** – remote access
+**Caching** – faster access
+**Consistency** – same data
+**Fault tolerance** – recovery
+
+---
+
+# 📌 UNIT–V
+
+---
+
+## **UNIT–V | QUESTION–1**
+
+### Load Distributing Issues
+
+**Load measurement** – workload
+**Migration cost** – transfer overhead
+**Stability** – avoid oscillation
+
+---
+
+## **UNIT–V | QUESTION–2**
+
+### Load Algorithm Components
+
+**Measurement policy** – load info
+**Transfer policy** – when move
+**Selection policy** – which task
+**Location policy** – where move
+
+---
+
+## **UNIT–V | QUESTION–3**
+
+### Load Distributing Algorithms
+
+**Static** – compile time
+**Dynamic** – runtime
+
+**Sender-Initiated** – overloaded sends
+**Receiver-Initiated** – idle requests
+
+---
+
+## **UNIT–V | QUESTION–4**
+
+### Task Migration
+
+**Preemptive** – suspend & move
+**Non-Preemptive** – finish first
+
+**Issues** – state, security
+
+---
+
+## **UNIT–V | QUESTION–5**
+
+### Distributed Shared Memory
+
+**Shared view** – global memory
+
+**Write-Invalidate** – invalidate copies
+**Write-Update** – update copies
+
+**Issues** – consistency, performance
+
