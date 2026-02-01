@@ -1,3 +1,4 @@
+---
 
 # 📌 UNIT–I
 
@@ -7,13 +8,19 @@
 
 ### Architectures of Distributed Systems
 
-**Client–Server** – central service
+**Client–Server Architecture**
+
+* A central server provides services to multiple clients.
+* Clients send requests and server sends responses.
 
 ```
 Client → Server ← Client
 ```
 
-**Peer-to-Peer** – equal nodes
+**Peer-to-Peer Architecture**
+
+* All nodes are equal.
+* Each node can act as both client and server.
 
 ```
 P ─ P
@@ -21,32 +28,65 @@ P ─ P
 P ─ P
 ```
 
-**Multi-Tier** – layered design
+**Multi-Tier Architecture**
+
+* System is divided into layers.
+* Each layer performs a specific function.
 
 ```
-UI → Logic → Data
+User Interface → Application Logic → Database
 ```
 
-**Service Oriented Architecture** – loose services
+**Service Oriented Architecture**
 
-**Centralized** – single control
-**Decentralized** – autonomous nodes
-**Hybrid** – mixed control
+* System consists of independent services.
+* Services are loosely coupled and reusable.
+
+**Centralized Architecture**
+
+* One central system controls all operations.
+
+**Decentralized Architecture**
+
+* Control is shared among multiple systems.
+
+**Hybrid Architecture**
+
+* Combination of centralized and decentralized models.
 
 ---
 
 ## **UNIT–I | QUESTION–2**
 
-### Issues and Limitations
+### Issues and Limitations of Distributed Systems
 
-**Heterogeneity** – different systems
-**Transparency** – hidden distribution
-**Scalability** – growth support
-**Fault tolerance** – failure handling
-**Security** – data protection
+**Heterogeneity**
 
-**No global clock** – time issue
-**Partial failures** – node crashes
+* Different hardware and software systems are used.
+
+**Transparency**
+
+* System hides distribution details from users.
+
+**Scalability**
+
+* System should support growth in users and resources.
+
+**Fault Tolerance**
+
+* System continues to work even if failures occur.
+
+**Security**
+
+* Protection of data and resources.
+
+**No Global Clock**
+
+* No common time reference exists.
+
+**Partial Failures**
+
+* Some systems may fail while others continue.
 
 ---
 
@@ -54,45 +94,82 @@ UI → Logic → Data
 
 ### Communication Networks and Primitives
 
-**Local Area Network** – short distance
-**Wide Area Network** – long distance
+**Local Area Network**
 
-**Bus / Star / Ring** – topologies
+* Used for short-distance communication.
 
-**Message Passing** – send/receive
-**Remote Procedure Call** – remote call
-**Stream Communication** – continuous data
-**Group Communication** – multicast
+**Wide Area Network**
+
+* Used for long-distance communication.
+
+**Network Topologies**
+
+* Bus, Star, and Ring define node connections.
+
+**Message Passing**
+
+* Processes communicate using send and receive operations.
+
+**Remote Procedure Call**
+
+* A process calls a procedure on a remote system.
+
+**Stream Communication**
+
+* Continuous flow of data between processes.
+
+**Group Communication**
+
+* One-to-many communication.
 
 ---
 
 ## **UNIT–I | QUESTION–4**
 
-### Logical Clocks and Causality
+### Logical Clocks and Causal Ordering
 
-**Lamport Clock** – event ordering
-**Happens-Before** – causal relation
+**Lamport Logical Clock**
 
-**Vector Clock** – causality + concurrency
+* Assigns logical timestamps to events.
+* Helps in ordering events.
 
-**Causal Ordering** – correct order
+**Happens-Before Relation**
+
+* Defines cause and effect between events.
+
+**Vector Clock**
+
+* Detects causality and concurrent events.
+
+**Causal Ordering**
+
+* Messages are delivered in correct order.
 
 ```
-P1 → msg → P2
+Process 1 → Message → Process 2
 ```
 
 ---
 
 ## **UNIT–I | QUESTION–5**
 
-### Global State and Termination
+### Global State and Termination Detection
 
-**Global State** – local + messages
+**Global State**
 
-**Consistent Cut** – valid snapshot
-**Inconsistent Cut** – invalid snapshot
+* Combination of all local states and messages.
 
-**Termination** – passive + no messages
+**Consistent Cut**
+
+* Represents a valid global state.
+
+**Inconsistent Cut**
+
+* Represents an invalid global state.
+
+**Termination Detection**
+
+* All processes are passive and no messages are in transit.
 
 ---
 
@@ -104,14 +181,29 @@ P1 → msg → P2
 
 ### Distributed Mutual Exclusion
 
-**Critical Section** – shared resource
+**Critical Section**
 
-**Mutual exclusion** – one process
-**Progress** – no deadlock
-**Fairness** – no starvation
+* Part of program accessing shared resources.
 
-**Non-Token** – permission based
-**Token-Based** – token ownership
+**Mutual Exclusion**
+
+* Only one process enters critical section.
+
+**Progress**
+
+* Requests are eventually granted.
+
+**Fairness**
+
+* No process starves.
+
+**Non-Token Based Algorithms**
+
+* Permission-based access.
+
+**Token-Based Algorithms**
+
+* Token grants access.
 
 ---
 
@@ -119,16 +211,28 @@ P1 → msg → P2
 
 ### Lamport’s Mutual Exclusion Algorithm
 
-**Logical clocks** – ordering
+**Logical Clocks**
 
-**Request** – ask permission
-**Reply** – grant permission
-**Release** – exit section
+* Used to order requests.
 
-**Rule** – queue head + replies
+**Request Message**
+
+* Process requests entry.
+
+**Reply Message**
+
+* Permission is granted.
+
+**Release Message**
+
+* Process exits critical section.
+
+**Rule**
+
+* Process enters when it is first in queue.
 
 ```
-REQ → REP → CS → REL
+Request → Reply → Critical Section → Release
 ```
 
 ---
@@ -137,14 +241,20 @@ REQ → REP → CS → REL
 
 ### Ricart–Agrawala Algorithm
 
-**Optimized Lamport** – fewer messages
+**Concept**
 
-**Request / Reply** – only messages
+* Improved version of Lamport’s algorithm.
 
-**Deferred reply** – timestamp rule
+**Messages Used**
+
+* Request and Reply only.
+
+**Deferred Reply**
+
+* Reply delayed based on timestamp.
 
 ```
-REQ ↔ REP
+Request ↔ Reply
 ```
 
 ---
@@ -153,29 +263,47 @@ REQ ↔ REP
 
 ### Maekawa’s Algorithm
 
-**Quorum** – subset permission
+**Quorum**
 
-**Intersection** – common member
+* Subset of processes grants permission.
 
-**Request / Grant** – permission
+**Intersection Property**
 
-**Fail / Inquire / Yield** – conflict handling
+* Any two quorums share one process.
+
+**Messages Used**
+
+* Request, Grant, Fail, Inquire, Yield.
 
 ```
 Q1 ∩ Q2 ≠ Ø
 ```
 
+**Limitation**
+
+* Deadlock may occur.
+
 ---
 
 ## **UNIT–II | QUESTION–5**
 
-### Token-Based Mutual Exclusion
+### Token-Based Mutual Exclusion Algorithms
 
-**Single Token** – access control
+**Single Token**
 
-**Suzuki–Kasami** – broadcast request
-**Singhal** – reduced broadcast
-**Raymond** – tree-based
+* Only token holder enters critical section.
+
+**Suzuki–Kasami Algorithm**
+
+* Uses broadcast requests.
+
+**Singhal’s Algorithm**
+
+* Reduces number of messages.
+
+**Raymond’s Algorithm**
+
+* Uses tree structure.
 
 ```
 Token → Process
@@ -189,46 +317,81 @@ Token → Process
 
 ## **UNIT–III | QUESTION–1**
 
-### Deadlock Basics
+### Distributed Deadlock Detection Basics
 
-**Mutual exclusion** – non-shareable
-**Hold and wait** – waiting resource
-**No preemption** – force not allowed
-**Circular wait** – cycle exists
+**Mutual Exclusion**
 
-**Prevention / Avoidance / Detection**
+* Resource cannot be shared.
+
+**Hold and Wait**
+
+* Process holds one resource and waits.
+
+**No Preemption**
+
+* Resources cannot be forcibly taken.
+
+**Circular Wait**
+
+* Processes form a cycle.
+
+**Handling Strategies**
+
+* Prevention, Avoidance, Detection.
 
 ---
 
 ## **UNIT–III | QUESTION–2**
 
-### Deadlock Detection Issues
+### Issues in Deadlock Detection and Resolution
 
-**No global state** – partial view
-**Message delay** – stale info
-**Phantom deadlock** – false detection
+**No Global State**
 
-**Recovery** – kill / rollback
+* Only partial system view exists.
+
+**Message Delay**
+
+* Information becomes outdated.
+
+**Phantom Deadlock**
+
+* False deadlock detection.
+
+**Recovery Methods**
+
+* Process termination or rollback.
 
 ---
 
 ## **UNIT–III | QUESTION–3**
 
-### Control Organizations
+### Control Organizations for Deadlock Detection
 
-**Centralized** – single coordinator
-**Distributed** – no coordinator
-**Hierarchical** – cluster based
+**Centralized Approach**
+
+* One coordinator detects deadlock.
+
+**Distributed Approach**
+
+* No central controller.
+
+**Hierarchical Approach**
+
+* Cluster-based detection.
 
 ---
 
 ## **UNIT–III | QUESTION–4**
 
-### Centralized Deadlock Detection
+### Centralized Deadlock Detection Algorithm
 
-**Global Wait-For Graph** – dependency
+**Global Wait-For Graph**
 
-**Cycle** – deadlock
+* Represents resource dependencies.
+
+**Cycle Detection**
+
+* Cycle indicates deadlock.
 
 ```
 P1 → P2 → P1
@@ -240,10 +403,9 @@ P1 → P2 → P1
 
 ### Distributed and Hierarchical Deadlock Detection
 
-### Distributed Detection
+**Distributed Detection**
 
-**Concept** – no controller
-**Working** – probe messages
+* Processes exchange probe messages.
 
 ```
 P1 → P2 → P3
@@ -251,23 +413,19 @@ P1 → P2 → P3
 └───────────┘
 ```
 
-**Limitation** – message overhead
+**Limitation**
 
----
+* High message overhead.
 
-### Hierarchical Detection
+**Hierarchical Detection**
 
-**Concept** – cluster based
-**Working** – local then global
+* Local detection followed by global detection.
 
 ```
-        Global Controller
-        /              \
-   Local C1          Local C2
+Global Controller
+   /        \
+Local C1  Local C2
 ```
-
-**Advantage** – scalable
-**Limitation** – complex
 
 ---
 
@@ -279,23 +437,35 @@ P1 → P2 → P3
 
 ### Multiprocessor Systems
 
-**Performance** – parallelism
-**Reliability** – graceful failure
+**Performance**
 
-**Shared Memory** – common memory
-**Bus-Based** – single bus
-**Crossbar** – multiple paths
-**Non-Uniform Memory Access** – local faster
+* Multiple processors work in parallel.
+
+**Reliability**
+
+* System continues after failure.
+
+**Architectures**
+
+* Shared memory, Bus-based, Crossbar, Non-uniform memory access.
 
 ---
 
 ## **UNIT–IV | QUESTION–2**
 
-### Operating System Structures
+### Multiprocessor Operating System Structures
 
-**Master–Slave** – single control
-**Symmetric Multiprocessing** – all equal
-**Asymmetric Multiprocessing** – fixed roles
+**Master–Slave Structure**
+
+* One processor controls others.
+
+**Symmetric Multiprocessing**
+
+* All processors are equal.
+
+**Asymmetric Multiprocessing**
+
+* Fixed processor roles.
 
 ---
 
@@ -303,12 +473,25 @@ P1 → P2 → P3
 
 ### Threads and Synchronization
 
-**Threads** – lightweight process
+**Threads**
 
-**Mutex** – exclusive lock
-**Semaphore** – counter control
-**Spinlock** – busy wait
-**Barrier** – phase sync
+* Lightweight execution units.
+
+**Mutex**
+
+* Ensures mutual exclusion.
+
+**Semaphore**
+
+* Controls resource count.
+
+**Spinlock**
+
+* Busy waiting lock.
+
+**Barrier**
+
+* Synchronization point.
 
 ---
 
@@ -316,11 +499,17 @@ P1 → P2 → P3
 
 ### Processor Scheduling
 
-**Load balancing** – equal work
-**Processor affinity** – cache reuse
+**Load Balancing**
 
-**Global Queue** – shared
-**Per-CPU Queue** – local
+* Equal distribution of work.
+
+**Processor Affinity**
+
+* Improves cache usage.
+
+**Scheduling Methods**
+
+* Global queue and per-processor queue.
 
 ---
 
@@ -328,10 +517,21 @@ P1 → P2 → P3
 
 ### Distributed File Systems
 
-**Client–Server** – remote access
-**Caching** – faster access
-**Consistency** – same data
-**Fault tolerance** – recovery
+**Client–Server Model**
+
+* Files accessed remotely.
+
+**Caching**
+
+* Improves performance.
+
+**Consistency**
+
+* Same data view for users.
+
+**Fault Tolerance**
+
+* System recovery after failure.
 
 ---
 
@@ -343,20 +543,39 @@ P1 → P2 → P3
 
 ### Load Distributing Issues
 
-**Load measurement** – workload
-**Migration cost** – transfer overhead
-**Stability** – avoid oscillation
+**Load Measurement**
+
+* Determines system workload.
+
+**Migration Cost**
+
+* Overhead of moving tasks.
+
+**Stability**
+
+* Avoids frequent migrations.
 
 ---
 
 ## **UNIT–V | QUESTION–2**
 
-### Load Algorithm Components
+### Load Distributed Algorithm Components
 
-**Measurement policy** – load info
-**Transfer policy** – when move
-**Selection policy** – which task
-**Location policy** – where move
+**Measurement Policy**
+
+* Collects load information.
+
+**Transfer Policy**
+
+* Decides when to migrate.
+
+**Selection Policy**
+
+* Chooses task to move.
+
+**Location Policy**
+
+* Selects destination system.
 
 ---
 
@@ -364,11 +583,21 @@ P1 → P2 → P3
 
 ### Load Distributing Algorithms
 
-**Static** – compile time
-**Dynamic** – runtime
+**Static Algorithms**
 
-**Sender-Initiated** – overloaded sends
-**Receiver-Initiated** – idle requests
+* Decisions made at compile time.
+
+**Dynamic Algorithms**
+
+* Decisions made at runtime.
+
+**Sender-Initiated**
+
+* Overloaded node sends tasks.
+
+**Receiver-Initiated**
+
+* Idle node requests tasks.
 
 ---
 
@@ -376,10 +605,17 @@ P1 → P2 → P3
 
 ### Task Migration
 
-**Preemptive** – suspend & move
-**Non-Preemptive** – finish first
+**Preemptive Migration**
 
-**Issues** – state, security
+* Task moved during execution.
+
+**Non-Preemptive Migration**
+
+* Task moved after completion.
+
+**Issues**
+
+* State transfer and security.
 
 ---
 
@@ -387,10 +623,21 @@ P1 → P2 → P3
 
 ### Distributed Shared Memory
 
-**Shared view** – global memory
+**Concept**
 
-**Write-Invalidate** – invalidate copies
-**Write-Update** – update copies
+* Shared memory abstraction on distributed systems.
 
-**Issues** – consistency, performance
+**Write Invalidate Protocol**
+
+* Invalidates other copies.
+
+**Write Update Protocol**
+
+* Updates all copies.
+
+**Issues**
+
+* Consistency and performance.
+
+---
 
