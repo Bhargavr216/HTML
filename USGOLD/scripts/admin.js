@@ -242,7 +242,8 @@ function initProductForm() {
         await ensureFsSetup();
         const t = blob.type || 'image/jpeg';
         const ext = t.indexOf('png') >= 0 ? 'png' : (t.indexOf('webp') >= 0 ? 'webp' : 'jpg');
-        const fname = `${p.id}.${ext}`;
+        const unique = (globalThis.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString();
+        const fname = `${p.id}-${unique}.${ext}`;
         const fh = await imagesDirHandle.getFileHandle(fname, { create: true });
         const w = await fh.createWritable();
         await w.write(blob);

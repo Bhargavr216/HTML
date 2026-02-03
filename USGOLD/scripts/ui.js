@@ -77,9 +77,7 @@ export function renderProducts(list) {
       renderWishlist();
     });
     el.querySelector('[data-action="tryme"]').addEventListener('click', () => {
-      const isPng = (p.imageUrl || '').toLowerCase().endsWith('.png') || (p.imageUrl || '').startsWith('data:image/png');
-      const fallback = `data/images/${p.id}.png`;
-      const overlay = isPng ? p.imageUrl : fallback;
+      const overlay = p.imageUrl;
       openTryMe(overlay);
     });
     grid.appendChild(el);
