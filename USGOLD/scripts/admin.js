@@ -4,6 +4,42 @@ import { showToast } from './ui.js';
 
 const authKey = 'usg_admin_auth';
 const defaultCred = { username: 'admin', password: 'admin123' };
+let projectDirHandle = null;
+let dataDirHandle = null;
+let imagesDirHandle = null;
+let productsFileHandle = null;
+async function ensureFsSetup() {
+  if (imagesDirHandle && productsFileHandle) return;
+  const dir = await window.showDirectoryPicker();
+  let root = dir;
+  try { root = await dir.getDirectoryHandle('USGOLD'); } catch {}
+  dataDirHandle = await root.getDirectoryHandle('data', { create: true });
+  imagesDirHandle = await dataDirHandle.getDirectoryHandle('images', { create: true });
+  productsFileHandle = await dataDirHandle.getFileHandle('products.json', { create: true });
+}
+function dataUrlToBlob(dataUrl) {
+  const parts = dataUrl.split(',');
+  const meta = parts[0];
+  const b64 = parts[1];
+  const mime = meta.substring(meta.indexOf(':') + 1, meta.indexOf(';'));
+  const bin = atob(b64);
+  const len = bin.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+async function resolveImageBlob(fileInput, urlOrData) {
+  const file = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+  if (file) return file;
+  if (!urlOrData) return null;
+  if (urlOrData.startsWith('data:')) return dataUrlToBlob(urlOrData);
+  if (urlOrData.startsWith('http')) {
+    const res = await fetch(urlOrData);
+    if (!res.ok) return null;
+    return await res.blob();
+  }
+  return null;
+}
 
 function getCred() {
   try {
@@ -199,6 +235,21 @@ function initProductForm() {
       description: document.getElementById('prod-desc').value.trim(),
     };
     if (!p.id || !p.name) { showToast('ID and Name required'); return; }
+    let blob = null;
+    try { blob = await resolveImageBlob(fileInput, p.imageUrl); } catch {}
+    if (blob) {
+      try {
+        await ensureFsSetup();
+        const t = blob.type || 'image/jpeg';
+        const ext = t.indexOf('png') >= 0 ? 'png' : (t.indexOf('webp') >= 0 ? 'webp' : 'jpg');
+        const fname = `${p.id}.${ext}`;
+        const fh = await imagesDirHandle.getFileHandle(fname, { create: true });
+        const w = await fh.createWritable();
+        await w.write(blob);
+        await w.close();
+        p.imageUrl = `data/images/${fname}`;
+      } catch {}
+    }
     const list = await getProducts();
     const exists = list.findIndex(x => x.id === p.id);
     if (exists >= 0) {
@@ -209,6 +260,12 @@ function initProductForm() {
       showToast('Product added');
     }
     setProducts(list);
+    try {
+      await ensureFsSetup();
+      const w = await productsFileHandle.createWritable();
+      await w.write(JSON.stringify(list, null, 2));
+      await w.close();
+    } catch {}
     renderProductsAdmin(list);
     clear();
   });
