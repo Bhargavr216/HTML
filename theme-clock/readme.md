@@ -1,5 +1,5 @@
 
-
+<div align="left">
 **UNIT – I**
 
 **QUESTION 1: What is Machine Learning? Explain its importance and role in modern computing.**
@@ -680,3 +680,4 @@ $$w_{new} = w_{old} - \eta \frac{\partial Error}{\partial w}$$
 $$Q(s,a) \leftarrow Q(s,a) + \alpha [r + \gamma \max Q(s',a') - Q(s,a)]$$
 
 **Steps:** Initialize Q-table -> Choose Action (Epsilon-greedy) -> Update Q-value -> Repeat.
+</div>
