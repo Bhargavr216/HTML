@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Cricket Live Prediction Pro</title>
+<title>Live Cricket Prediction Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
 font-family:Arial;
@@ -14,71 +13,56 @@ margin:0;
 padding:20px;
 }
 .card{
-background:rgba(255,255,255,0.08);
+background:rgba(255,255,255,0.1);
 padding:20px;
 border-radius:20px;
 margin:15px auto;
 max-width:1000px;
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
-}
-input,select,button{
-padding:8px;
-border-radius:10px;
-border:none;
-margin:5px;
 }
 button{
+padding:8px 12px;
+margin:5px;
+border:none;
+border-radius:8px;
 cursor:pointer;
 font-weight:bold;
 }
 .primary{background:#00f5a0;color:black;}
-.result-btn{background:#ffcc00;}
+.predict-btn{background:#ffcc00;}
+.selected{background:#ff5722;color:white;}
 .players{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:15px;
 margin-top:15px;
 }
 .player-card{
-background:rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.15);
 padding:15px;
 border-radius:15px;
 }
-.score{font-size:18px;font-weight:bold;}
-.locked{background:#888;color:white;}
-.leaderboard-item{
-display:flex;
-justify-content:space-between;
-border-bottom:1px solid rgba(255,255,255,0.2);
-padding:5px;
+.timer{
+font-size:20px;
+font-weight:bold;
+color:#00f5a0;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🏏 Live Ball Prediction Game</h1>
+<h1>🏏 Live Auto Prediction Game</h1>
 
 <div class="card">
-<h3>Enter Number of Players</h3>
+<h3>Enter Players</h3>
 <input type="number" id="playerCount">
 <button class="primary" onclick="createInputs()">Next</button>
 <div id="playerInputs"></div>
 </div>
 
 <div class="card">
+<div class="timer">Last Ball: <span id="lastBall">Waiting...</span></div>
 <div class="players" id="players"></div>
-</div>
-
-<div class="card" id="resultSection" style="display:none;">
-<h3>Select Ball Result</h3>
-<button class="result-btn" onclick="setResult('0')">0</button>
-<button class="result-btn" onclick="setResult('1')">1</button>
-<button class="result-btn" onclick="setResult('2')">2</button>
-<button class="result-btn" onclick="setResult('3')">3</button>
-<button class="result-btn" onclick="setResult('4')">4</button>
-<button class="result-btn" onclick="setResult('6')">6</button>
-<button class="result-btn" onclick="setResult('Wicket')">Wicket</button>
 </div>
 
 <div class="card">
@@ -89,6 +73,7 @@ padding:5px;
 <script>
 
 let players=[];
+let lastProcessedBall="";
 
 function createInputs(){
 let count=document.getElementById("playerCount").value;
@@ -103,11 +88,11 @@ container.innerHTML+=`<br><button class="primary" onclick="startGame(${count})">
 function startGame(count){
 players=[];
 for(let i=0;i<count;i++){
-let name=document.getElementById(`p${i}`).value;
-players.push({name:name,score:0,prediction:"",locked:false});
+let name=document.getElementById("p"+i).value;
+players.push({name:name,score:0,prediction:""});
 }
-document.getElementById("resultSection").style.display="block";
 render();
+startLiveFetch();
 }
 
 function render(){
@@ -117,51 +102,21 @@ players.forEach((p,i)=>{
 div.innerHTML+=`
 <div class="player-card">
 <h4>${p.name}</h4>
-<div class="score">${p.score} pts</div>
-
-<select id="sel${i}" ${p.locked?"disabled":""}>
-<option value="">Predict</option>
-<option>0</option>
-<option>1</option>
-<option>2</option>
-<option>3</option>
-<option>4</option>
-<option>6</option>
-<option>Wicket</option>
-</select>
-<br>
-<button onclick="lockPrediction(${i})" 
-class="${p.locked?'locked':''}" 
-${p.locked?"disabled":""}>
-${p.locked?"Locked 🔒":"Lock Prediction"}
-</button>
-
-<p>${p.prediction?("Selected: "+p.prediction):""}</p>
-</div>
-`;
+<b>${p.score} pts</b>
+<br><br>
+${["0","1","2","3","4","6","Wicket"].map(r=>
+`<button class="predict-btn ${p.prediction===r?'selected':''}"
+onclick="setPrediction(${i},'${r}')">${r}</button>`
+).join("")}
+<br><br>
+Selected: ${p.prediction||"-"}
+</div>`;
 });
 updateLeaderboard();
 }
 
-function lockPrediction(index){
-let select=document.getElementById("sel"+index);
-if(!select.value){
-alert("Select prediction first");
-return;
-}
-players[index].prediction=select.value;
-players[index].locked=true;
-render();
-}
-
-function setResult(result){
-players.forEach(p=>{
-if(p.prediction===result){
-p.score+=1;
-}
-p.prediction="";
-p.locked=false;
-});
+function setPrediction(index,value){
+players[index].prediction=value;
 render();
 }
 
@@ -170,12 +125,59 @@ let sorted=[...players].sort((a,b)=>b.score-a.score);
 let board=document.getElementById("leaderboard");
 board.innerHTML="";
 sorted.forEach((p,i)=>{
-board.innerHTML+=`
-<div class="leaderboard-item">
-<span>${i+1}. ${p.name}</span>
-<span>${p.score} pts</span>
-</div>`;
+board.innerHTML+=`<div>${i+1}. ${p.name} - ${p.score} pts</div>`;
 });
+}
+
+// 🔥 LIVE FETCH (Replace with your API key)
+function startLiveFetch(){
+setInterval(fetchLiveBall,10000);
+}
+
+async function fetchLiveBall(){
+
+// ⚠️ YOU MUST PUT YOUR RAPIDAPI KEY HERE
+const API_KEY = "YOUR_RAPIDAPI_KEY";
+
+try{
+
+const response = await fetch("https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/41881",{
+method:"GET",
+headers:{
+"X-RapidAPI-Key": API_KEY,
+"X-RapidAPI-Host": "cricbuzz-cricket.p.rapidapi.com"
+}
+});
+
+const data = await response.json();
+
+// ⚡ Example parsing (depends on API structure)
+let currentOver = data?.liveScore?.recentOvsStats;
+
+if(currentOver && currentOver !== lastProcessedBall){
+
+lastProcessedBall=currentOver;
+document.getElementById("lastBall").innerText=currentOver;
+
+// Extract last character of over string
+let result=currentOver.split(" ").pop();
+processResult(result);
+
+}
+
+}catch(err){
+console.log("Live API failed",err);
+}
+}
+
+function processResult(result){
+players.forEach(p=>{
+if(p.prediction===result){
+p.score+=1;
+}
+p.prediction="";
+});
+render();
 }
 
 </script>
