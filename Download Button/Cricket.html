@@ -1,246 +1,183 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cricket Ball Predictor Pro</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+<title>Cricket Live Prediction Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            background: linear-gradient(135deg, #141e30, #243b55);
-            color: white;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 15px auto;
-            max-width: 1000px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        input {
-            padding: 10px;
-            border-radius: 10px;
-            border: none;
-            margin: 5px;
-            width: 200px;
-        }
-
-        button {
-            padding: 10px 18px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
-
-        .primary-btn {
-            background: #00f5a0;
-            color: black;
-        }
-
-        .primary-btn:hover {
-            background: #00c97d;
-            transform: scale(1.05);
-        }
-
-        .players {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .player-card {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .player-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .avatar {
-            font-size: 50px;
-        }
-
-        .score {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
-        select {
-            padding: 6px;
-            border-radius: 8px;
-            border: none;
-        }
-
-        .result-buttons {
-            text-align: center;
-            margin-top: 25px;
-        }
-
-        .result-buttons button {
-            margin: 8px;
-            background: #ffcc00;
-        }
-
-        .result-buttons button:hover {
-            background: #ffaa00;
-            transform: scale(1.1);
-        }
-
-        .leaderboard {
-            margin-top: 20px;
-        }
-
-        .leaderboard h3 {
-            margin-bottom: 10px;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        @media(max-width: 600px) {
-            input {
-                width: 100%;
-            }
-        }
-    </style>
+<style>
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#141e30,#243b55);
+color:white;
+text-align:center;
+margin:0;
+padding:20px;
+}
+.card{
+background:rgba(255,255,255,0.08);
+padding:20px;
+border-radius:20px;
+margin:15px auto;
+max-width:1000px;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+input,select,button{
+padding:8px;
+border-radius:10px;
+border:none;
+margin:5px;
+}
+button{
+cursor:pointer;
+font-weight:bold;
+}
+.primary{background:#00f5a0;color:black;}
+.result-btn{background:#ffcc00;}
+.players{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-top:15px;
+}
+.player-card{
+background:rgba(255,255,255,0.1);
+padding:15px;
+border-radius:15px;
+}
+.score{font-size:18px;font-weight:bold;}
+.locked{background:#888;color:white;}
+.leaderboard-item{
+display:flex;
+justify-content:space-between;
+border-bottom:1px solid rgba(255,255,255,0.2);
+padding:5px;
+}
+</style>
 </head>
+
 <body>
 
-<h1>🏏 Cricket Predictor Pro</h1>
+<h1>🏏 Live Ball Prediction Game</h1>
 
-<div class="card" id="setup">
-    <h3>Enter Number of Players</h3>
-    <input type="number" id="playerCount" min="1">
-    <button class="primary-btn" onclick="createInputs()">Next</button>
-    <div id="playerInputs"></div>
+<div class="card">
+<h3>Enter Number of Players</h3>
+<input type="number" id="playerCount">
+<button class="primary" onclick="createInputs()">Next</button>
+<div id="playerInputs"></div>
 </div>
 
 <div class="card">
-    <div class="players" id="players"></div>
+<div class="players" id="players"></div>
 </div>
 
-<div class="card result-buttons" id="resultSection" style="display:none;">
-    <h3>Select Ball Result</h3>
-    <button onclick="setResult('0')">0</button>
-    <button onclick="setResult('1')">1</button>
-    <button onclick="setResult('2')">2</button>
-    <button onclick="setResult('3')">3</button>
-    <button onclick="setResult('4')">4</button>
-    <button onclick="setResult('6')">6</button>
-    <button onclick="setResult('Wicket')">Wicket</button>
+<div class="card" id="resultSection" style="display:none;">
+<h3>Select Ball Result</h3>
+<button class="result-btn" onclick="setResult('0')">0</button>
+<button class="result-btn" onclick="setResult('1')">1</button>
+<button class="result-btn" onclick="setResult('2')">2</button>
+<button class="result-btn" onclick="setResult('3')">3</button>
+<button class="result-btn" onclick="setResult('4')">4</button>
+<button class="result-btn" onclick="setResult('6')">6</button>
+<button class="result-btn" onclick="setResult('Wicket')">Wicket</button>
 </div>
 
-<div class="card leaderboard">
-    <h3>🏆 Leaderboard</h3>
-    <div id="leaderboardList"></div>
+<div class="card">
+<h3>🏆 Leaderboard</h3>
+<div id="leaderboard"></div>
 </div>
 
 <script>
-let players = [];
 
-function createInputs() {
-    let count = document.getElementById("playerCount").value;
-    let container = document.getElementById("playerInputs");
-    container.innerHTML = "";
+let players=[];
 
-    for (let i = 0; i < count; i++) {
-        container.innerHTML += `<input type="text" placeholder="Player ${i+1} Name" id="p${i}">`;
-    }
-
-    container.innerHTML += `<br><button class="primary-btn" onclick="startGame(${count})">Start Game</button>`;
+function createInputs(){
+let count=document.getElementById("playerCount").value;
+let container=document.getElementById("playerInputs");
+container.innerHTML="";
+for(let i=0;i<count;i++){
+container.innerHTML+=`<input type="text" placeholder="Player ${i+1}" id="p${i}">`;
+}
+container.innerHTML+=`<br><button class="primary" onclick="startGame(${count})">Start Game</button>`;
 }
 
-function startGame(count) {
-    players = [];
-    for (let i = 0; i < count; i++) {
-        let name = document.getElementById(`p${i}`).value;
-        players.push({name: name, score: 0, prediction: ""});
-    }
-    document.getElementById("resultSection").style.display = "block";
-    render();
+function startGame(count){
+players=[];
+for(let i=0;i<count;i++){
+let name=document.getElementById(`p${i}`).value;
+players.push({name:name,score:0,prediction:"",locked:false});
+}
+document.getElementById("resultSection").style.display="block";
+render();
 }
 
-function render() {
-    let playerDiv = document.getElementById("players");
-    playerDiv.innerHTML = "";
+function render(){
+let div=document.getElementById("players");
+div.innerHTML="";
+players.forEach((p,i)=>{
+div.innerHTML+=`
+<div class="player-card">
+<h4>${p.name}</h4>
+<div class="score">${p.score} pts</div>
 
-    players.forEach((p, i) => {
-        playerDiv.innerHTML += `
-        <div class="player-card">
-            <div class="avatar">🧑</div>
-            <h4>${p.name}</h4>
-            <div class="score">${p.score} pts</div>
-            <select onchange="setPrediction(${i}, this.value)">
-                <option value="">Predict</option>
-                <option>0</option><option>1</option>
-                <option>2</option><option>3</option>
-                <option>4</option><option>6</option>
-                <option>Wicket</option>
-            </select>
-            <p>${p.prediction ? "Selected: "+p.prediction : ""}</p>
-        </div>`;
-    });
+<select id="sel${i}" ${p.locked?"disabled":""}>
+<option value="">Predict</option>
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>6</option>
+<option>Wicket</option>
+</select>
+<br>
+<button onclick="lockPrediction(${i})" 
+class="${p.locked?'locked':''}" 
+${p.locked?"disabled":""}>
+${p.locked?"Locked 🔒":"Lock Prediction"}
+</button>
 
-    updateLeaderboard();
+<p>${p.prediction?("Selected: "+p.prediction):""}</p>
+</div>
+`;
+});
+updateLeaderboard();
 }
 
-function setPrediction(index, value) {
-    players[index].prediction = value;
-    render();
+function lockPrediction(index){
+let select=document.getElementById("sel"+index);
+if(!select.value){
+alert("Select prediction first");
+return;
+}
+players[index].prediction=select.value;
+players[index].locked=true;
+render();
 }
 
-function setResult(result) {
-    players.forEach(p => {
-        if (p.prediction === result) p.score += 1;
-        p.prediction = "";
-    });
-    render();
+function setResult(result){
+players.forEach(p=>{
+if(p.prediction===result){
+p.score+=1;
+}
+p.prediction="";
+p.locked=false;
+});
+render();
 }
 
-function updateLeaderboard() {
-    let sorted = [...players].sort((a,b)=>b.score-a.score);
-    let list = document.getElementById("leaderboardList");
-    list.innerHTML = "";
-    sorted.forEach((p, index)=>{
-        list.innerHTML += `
-        <div class="leaderboard-item">
-            <span>${index+1}. ${p.name}</span>
-            <span>${p.score} pts</span>
-        </div>`;
-    });
+function updateLeaderboard(){
+let sorted=[...players].sort((a,b)=>b.score-a.score);
+let board=document.getElementById("leaderboard");
+board.innerHTML="";
+sorted.forEach((p,i)=>{
+board.innerHTML+=`
+<div class="leaderboard-item">
+<span>${i+1}. ${p.name}</span>
+<span>${p.score} pts</span>
+</div>`;
+});
 }
+
 </script>
 
 </body>
