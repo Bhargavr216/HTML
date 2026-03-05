@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>Turf Cricket Pulse</title>
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-content">
+          <h1>VBR</h1>
+      </div>
+      <div class="hero-score-card tile">
+        <div class="hero-score-head">
+          <div class="hero-team-line">
+            <span id="heroBatName">Batting Team</span>
+            <span class="hero-vs">vs</span>
+            <span id="heroOppName">Opposition</span>
+          </div>
+          <span class="score-chip">Live</span>
+        </div>
+        <div class="hero-score-value">
+          <div class="value major" id="runs">0</div>
+          <div class="details">
+            <span id="wickets">0</span><span>W</span>
+            <span id="overs">0.0</span><span>O</span>
+          </div>
+          <div class="mini">Match score</div>
+        </div>
+        <div class="hero-score-meta">
+          <span>Balls: <strong id="balls">0</strong></span>
+          <p id="statusMessage" class="status-message"></p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="tile team-heading">
+        <div class="label">Match setup</div>
+        <div class="team-names">
+          <label>
+            Batting team
+            <input id="battingTeam" type="text" placeholder="Enter batting team" />
+          </label>
+          <label>
+            Opponent
+            <input id="opponentTeam" type="text" placeholder="Enter opponent" />
+          </label>
+        </div>
+        <p class="team-summary" id="teamSummary">
+          Set the batting/opponent names to keep the match context on top.
+        </p>
+      </section>
+
+      <section class="scoreboard grid">
+        <article class="score-controls tile">
+          <div class="label">Quick actions</div>
+          <div class="control-grid">
+            <button data-action="run" data-value="1">+1 run</button>
+            <button data-action="run" data-value="2">+2 runs</button>
+            <button data-action="run" data-value="3">+3 runs</button>
+            <button data-action="run" data-value="4">Boundary</button>
+            <button data-action="run" data-value="6">Six</button>
+            <button data-action="extra" data-value="1">Extra</button>
+            <button data-action="wicket" data-value="1">Wicket</button>
+            <button data-action="ball" data-value="1">Ball</button>
+          </div>
+          <form id="manualBall" class="secondary-form">
+            <div>
+              <label for="runInput">Runs</label>
+              <input
+                id="runInput"
+                name="runs"
+                type="number"
+                min="0"
+                placeholder="0"
+              />
+            </div>
+            <div>
+              <label for="ballNote">Note</label>
+              <input id="ballNote" name="note" type="text" placeholder="edge..." />
+            </div>
+          <button type="submit">Log ball</button>
+          <button id="undoBtn" class="ghost-btn undo-btn" type="button">
+            Undo last action
+          </button>
+          </form>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="tile lineup">
+          <div class="label">Live lineup</div>
+          <div class="lineup-grid">
+            <label>
+              Striker
+              <select id="strikerSelect" data-position="striker"></select>
+            </label>
+            <label>
+              Non-striker
+              <select
+                id="nonStrikerSelect"
+                data-position="nonStriker"
+              ></select>
+            </label>
+          </div>
+          <div class="lineup-grid">
+            <label>
+              Current bowler
+              <select id="bowlerSelect" data-position="bowler"></select>
+            </label>
+            <label>
+              Incoming bowler
+              <select id="nextBowlerSelect" data-position="nextBowler"></select>
+            </label>
+          </div>
+          <div class="lineup-grid">
+            <label>
+              Incoming batter
+              <select id="incomingSelect" data-position="incomingBatter"></select>
+            </label>
+          </div>
+          <p class="lineup-note">
+            Select the next batter and bowler before logging a wicket so the
+            UI can rotate them in immediately.
+          </p>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="tile log">
+          <div class="label">Live log</div>
+          <ul id="actionLog"></ul>
+        </article>
+        <article class="tile toss">
+          <div class="label">Head or Tail</div>
+          <p class="toss-lede">
+            Tap toss to set field, choose who bowls first, or simply capture the
+            lucky head or tail moment.
+          </p>
+          <div class="toss-panel">
+            <button id="tossBtn" type="button">Flip coin</button>
+            <p class="toss-result" id="tossResult">No toss yet.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="tile team-manager">
+          <div class="label">Teams &amp; players</div>
+          <div class="team-manager-forms">
+            <div class="form-card">
+              <p class="form-card-title">Create team</p>
+              <form id="teamForm" class="secondary-form">
+                <input
+                  id="teamName"
+                  name="teamName"
+                  type="text"
+                  placeholder="Team name"
+                  required
+                />
+                <button type="submit">Add team</button>
+              </form>
+            </div>
+            <div class="form-card">
+              <p class="form-card-title">Add player</p>
+              <form id="playerForm" class="secondary-form">
+                <select id="teamSelect" name="team" required>
+                  <option value="" disabled selected>Select team</option>
+                </select>
+                <input
+                  id="playerName"
+                  name="playerName"
+                  type="text"
+                  placeholder="Player name"
+                  required
+                />
+                <button type="submit">Add player</button>
+              </form>
+            </div>
+          </div>
+          <p class="team-manager-note">
+            Tap the rename button to adjust a team name, or remove teams and
+            players directly so stray entries stay data-clean.
+          </p>
+          <div id="teamList" class="team-list"></div>
+        </article>
+
+        <article class="tile match-planner">
+          <div class="label">Match planner</div>
+          <form id="matchForm" class="secondary-form">
+            <input
+              name="opponent"
+              type="text"
+              placeholder="Opponent team"
+              required
+            />
+            <input
+              name="format"
+              type="text"
+              placeholder="Format (e.g., 20 overs)"
+              required
+            />
+            <input
+              name="date"
+              type="date"
+              required
+            />
+            <button type="submit">Save match</button>
+          </form>
+          <div id="matchCards" class="match-cards"></div>
+        </article>
+      </section>
+
+      <section class="tile notes">
+        <div class="label">Notes &amp; reminders</div>
+        <p>
+          Track last-ball narratives, share the screen with your scorer, or keep
+          a tally for every friendly fixture. The layout is fully responsive for
+          phones, so you can update scores while keeping your phone in one hand.
+        </p>
+        <ul class="notes-list">
+          <li><strong>Runs:</strong> Tap quick actions or use the manual form.</li>
+          <li><strong>Overs:</strong> Each ball button increments the ball counter.</li>
+          <li><strong>Teams:</strong> Add team names before registering players.</li>
+          <li><strong>Matches:</strong> Plan fixtures, and review upcoming dates.</li>
+          <li><strong>Deploy:</strong> Push to GitHub and enable GitHub Pages (instructions in README).</li>
+        </ul>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
