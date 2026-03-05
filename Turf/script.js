@@ -618,12 +618,15 @@ function swapStrikers() {
 
 function appendHistory(symbol) {
   state.history.push(symbol);
-  if (state.history.length > 40) state.history.shift();
+  const maxEntries = Math.max(state.maxOvers || 6, 6) * 8;
+  while (state.history.length > maxEntries) {
+    state.history.shift();
+  }
 }
 
 function checkOverCompletion() {
   if (state.legalBallsThisOver >= 6) {
-    state.overHistory.unshift({
+    state.overHistory.push({
       over: Math.floor(state.balls / 6),
       balls: [...state.currentOverBalls],
     });
@@ -633,15 +636,15 @@ function checkOverCompletion() {
       finalizeMatch(`${state.teams[state.battingTeam].name} completed ${state.maxOvers} overs.`, true);
       return;
     }
-  state.awaitingBowler = true;
-  state.bowler = "";
-  bowlerSelect.disabled = false;
-  scoringMessageEl.textContent = "Over complete. Pick the next bowler.";
-  if (playerSelectionPanel) {
-    playerSelectionPanel.classList.remove("hidden");
-    playerSelectionStatus.textContent = "Pick the next bowler.";
+    state.awaitingBowler = true;
+    state.bowler = "";
+    bowlerSelect.disabled = false;
+    scoringMessageEl.textContent = "Over complete. Pick the next bowler.";
+    if (playerSelectionPanel) {
+      playerSelectionPanel.classList.remove("hidden");
+      playerSelectionStatus.textContent = "Pick the next bowler.";
+    }
   }
-}
   updateScoringButtons();
 }
 
