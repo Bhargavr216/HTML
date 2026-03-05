@@ -95,6 +95,7 @@
         margin-top: 0.4rem;
         display: flex;
         gap: 0.6rem;
+        align-items: center;
       }
 
       .overs-input-row select {
@@ -120,6 +121,14 @@
 
       .overs-input-row button:active {
         transform: translateY(1px);
+      }
+
+      .overs-input-row button.reset-btn {
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.05);
+        color: #f8fbff;
+        font-weight: 500;
+        padding: 0.55rem 0.85rem;
       }
 
       .controls {
@@ -166,6 +175,9 @@
         flex-wrap: wrap;
         gap: 0.4rem;
         font-size: 0.95rem;
+        max-height: 220px;
+        overflow-y: auto;
+        padding-right: 0.35rem;
       }
       .history-chip {
         background: rgba(255, 255, 255, 0.1);
@@ -183,6 +195,36 @@
         background: rgba(255, 0, 90, 0.15);
         border-color: rgba(255, 0, 90, 0.4);
         color: #ff5e92;
+      }
+      .over-log {
+        margin-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 0.9rem;
+      }
+      .over-log h4 {
+        margin: 0 0 0.5rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: #9cb3d5;
+      }
+      .over-history {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        max-height: 180px;
+        overflow-y: auto;
+      }
+      .over-history-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.35rem 0.5rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.9rem;
+        gap: 0.5rem;
       }
       .meta {
         margin-top: 1rem;
@@ -246,6 +288,7 @@
             <option value="10">10 overs</option>
           </select>
           <button id="setOversBtn">Apply</button>
+          <button id="resetMatchBtn" type="button" class="reset-btn">Reset</button>
         </div>
       </div>
       <section class="score-grid" aria-label="score totals">
@@ -281,6 +324,12 @@
         <div id="historyLine" class="history-line">
           <span class="history-chip">none yet</span>
         </div>
+        <div class="over-log">
+          <h4>Over log</h4>
+          <div id="overHistoryList" class="over-history">
+            <span class="history-chip">No overs yet</span>
+          </div>
+        </div>
         <div class="meta">
           <span>
             <strong id="currentOver">Over 1</strong>
@@ -299,72 +348,207 @@
       const oversDisplay = document.getElementById("oversDisplay");
       const ballsDisplay = document.getElementById("ballsDisplay");
       const historyLine = document.getElementById("historyLine");
+      const overHistoryList = document.getElementById("overHistoryList");
       const currentOver = document.getElementById("currentOver");
       const lastBall = document.getElementById("lastBall");
+      const statusMessage = document.getElementById("statusMessage");
+      const oversSelect = document.getElementById("oversSelect");
+      const setOversBtn = document.getElementById("setOversBtn");
+      const resetMatchBtn = document.getElementById("resetMatchBtn");
+      const runButtons = document.querySelectorAll("[data-run]");
+      const extraButtons = document.querySelectorAll("[data-extra]");
+
       let runs = 0;
       let wickets = 0;
-      let balls = 0;
       let legalBalls = 0;
+      let legalBallsThisOver = 0;
+      let maxOvers = Number(oversSelect.value) || 6;
       let history = [];
+      let overHistory = [];
+      let currentOverBalls = [];
+      let matchReady = false;
+      let matchComplete = false;
+      let lastBallLabel = "-";
+
+      function resetMatchState() {
+        runs = 0;
+        wickets = 0;
+        legalBalls = 0;
+        legalBallsThisOver = 0;
+        history = [];
+        overHistory = [];
+        currentOverBalls = [];
+        lastBallLabel = "-";
+        matchReady = false;
+        matchComplete = false;
+      }
+
+      function formatOvers(ballCount) {
+        const overs = Math.floor(ballCount / 6);
+        const balls = ballCount % 6;
+        return `${overs}.${balls}`;
+      }
 
       function render() {
-        const overs = Math.floor(legalBalls / 6);
-        const rem = legalBalls % 6;
         scoreDisplay.textContent = `${runs} / ${wickets}`;
         ballsDisplay.textContent = legalBalls;
-        oversDisplay.textContent = `${overs}.${rem}`;
-        currentOver.textContent = `Over ${overs + 1}`;
-        lastBall.textContent = history.length ? history[history.length - 1].label : "-";
+        oversDisplay.textContent = formatOvers(legalBalls);
+        const nextOver = matchComplete ? maxOvers : Math.floor(legalBalls / 6) + 1;
+        currentOver.textContent = `Over ${Math.min(nextOver, maxOvers)}`;
+        lastBall.textContent = lastBallLabel;
         historyLine.innerHTML = history.length
           ? history
-              .slice(-12)
               .map(
-                (ball) =>
-                  `<span class="history-chip ${ball.type}">${ball.label}</span>`
+                (entry) =>
+                  `<span class="history-chip ${entry.type}">${entry.label}</span>`
               )
               .join("")
           : '<span class="history-chip">none yet</span>';
+        renderOverHistory();
       }
 
-      function pushBall(label, type) {
+      function renderOverHistory() {
+        if (!overHistory.length && !currentOverBalls.length) {
+          overHistoryList.innerHTML =
+            '<span class="history-chip">Waiting for the first ball</span>';
+          return;
+        }
+        const lines = [];
+        overHistory.forEach((over) => {
+          lines.push(
+            `<div class="over-history-item"><span>Over ${over.over}</span><span>${over.balls.join(" ")}</span></div>`
+          );
+        });
+        if (currentOverBalls.length && !matchComplete) {
+          lines.push(
+            `<div class="over-history-item"><span>Over ${
+              overHistory.length + 1
+            }</span><span>${currentOverBalls.join(" ")}</span></div>`
+          );
+        }
+        overHistoryList.innerHTML = lines.join("");
+      }
+
+      function pushBall(label, type, legal) {
         history.push({ label, type });
-        if (history.length > 40) history.shift();
+        currentOverBalls.push(label);
+        lastBallLabel = label;
+        if (legal) {
+          legalBalls += 1;
+          legalBallsThisOver += 1;
+          if (legalBallsThisOver >= 6) {
+            overHistory.push({
+              over: overHistory.length + 1,
+              balls: [...currentOverBalls],
+            });
+            currentOverBalls = [];
+            legalBallsThisOver = 0;
+          }
+        }
       }
 
-      document.querySelectorAll("[data-run]").forEach((button) => {
+      function evaluateMatchEnd() {
+        if (wickets >= 10) {
+          concludeMatch("All out");
+          return true;
+        }
+        if (legalBalls >= maxOvers * 6) {
+          concludeMatch("Overs complete");
+          return true;
+        }
+        return false;
+      }
+
+      function concludeMatch(reason) {
+        if (matchComplete) return;
+        matchComplete = true;
+        matchReady = false;
+        if (currentOverBalls.length) {
+          overHistory.push({
+            over: overHistory.length + 1,
+            balls: [...currentOverBalls],
+          });
+          currentOverBalls = [];
+          legalBallsThisOver = 0;
+        }
+        const oversText = formatOvers(legalBalls);
+        const message =
+          reason === "All out"
+            ? `Match complete (all out) - ${runs}/${wickets} in ${oversText} overs.`
+            : `Match complete - ${runs}/${wickets} in ${oversText} overs.`;
+        statusMessage.textContent = message;
+        render();
+      }
+
+      function startNewMatch(message) {
+        resetMatchState();
+        matchReady = true;
+        statusMessage.textContent = message;
+        render();
+      }
+
+      function requireReady() {
+        if (!matchReady) {
+          statusMessage.textContent = "Choose overs and tap Apply to start.";
+          return false;
+        }
+        if (matchComplete) {
+          statusMessage.textContent = "Match finished. Reset to start again.";
+          return false;
+        }
+        return true;
+      }
+
+      runButtons.forEach((button) => {
         button.addEventListener("click", () => {
+          if (!requireReady()) return;
           const value = Number(button.dataset.run);
           runs += value;
-          balls += 1;
-          legalBalls += 1;
-          if (value === 0) {
-            pushBall("0", "dot");
-          } else {
-            pushBall(value.toString(), "run");
+          pushBall(value === 0 ? "0" : value.toString(), value === 0 ? "dot" : "run", true);
+          if (!evaluateMatchEnd()) {
+            render();
           }
-          render();
         });
       });
 
-      document.querySelectorAll("[data-extra]").forEach((button) => {
+      extraButtons.forEach((button) => {
         button.addEventListener("click", () => {
+          if (!requireReady()) return;
           const type = button.dataset.extra;
           if (type === "wide") {
             runs += 1;
-            pushBall("Wd", "wide");
+            pushBall("Wd", "wide", false);
+            render();
           } else if (type === "noball") {
             runs += 1;
-            pushBall("Nb", "noball");
+            pushBall("Nb", "noball", false);
+            render();
           } else if (type === "wicket") {
             wickets += 1;
-            balls += 1;
-            legalBalls += 1;
-            pushBall("W", "wicket");
+            pushBall("W", "wicket", true);
+            if (!evaluateMatchEnd()) {
+              render();
+            }
           }
-          render();
         });
       });
 
+      setOversBtn.addEventListener("click", () => {
+        maxOvers = Math.min(Math.max(Number(oversSelect.value) || 6, 1), 50);
+        oversSelect.value = maxOvers;
+        startNewMatch(`Overs locked at ${maxOvers}. Score away!`);
+      });
+
+      resetMatchBtn.addEventListener("click", () => {
+        maxOvers = 6;
+        oversSelect.value = "6";
+        resetMatchState();
+        statusMessage.textContent = "Match reset. Choose overs and tap Apply.";
+        render();
+      });
+
+      resetMatchState();
+      statusMessage.textContent = "Set overs and tap Apply to begin.";
       render();
     </script>
   </body>
