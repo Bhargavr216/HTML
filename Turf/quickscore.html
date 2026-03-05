@@ -318,6 +318,7 @@
         <button class="extra" data-extra="wide">Wide</button>
         <button class="extra" data-extra="noball">No Ball</button>
         <button class="extra" data-extra="wicket">Wicket</button>
+        <button id="undoBtn" type="button" class="extra" disabled>Undo</button>
       </section>
       <section class="history" aria-label="ball history">
         <h4>Ball-by-ball log</h4>
@@ -357,6 +358,7 @@
       const resetMatchBtn = document.getElementById("resetMatchBtn");
       const runButtons = document.querySelectorAll("[data-run]");
       const extraButtons = document.querySelectorAll("[data-extra]");
+      const undoBtn = document.getElementById("undoBtn");
 
       let runs = 0;
       let wickets = 0;
@@ -369,6 +371,60 @@
       let matchReady = false;
       let matchComplete = false;
       let lastBallLabel = "-";
+      let undoStack = [];
+
+      function captureSnapshot() {
+        return {
+          runs,
+          wickets,
+          legalBalls,
+          legalBallsThisOver,
+          history: history.map((entry) => ({ ...entry })),
+          overHistory: overHistory.map((entry) => ({
+            over: entry.over,
+            balls: [...entry.balls],
+          })),
+          currentOverBalls: [...currentOverBalls],
+          matchReady,
+          matchComplete,
+          lastBallLabel,
+        };
+      }
+
+      function restoreSnapshot(snapshot) {
+        runs = snapshot.runs;
+        wickets = snapshot.wickets;
+        legalBalls = snapshot.legalBalls;
+        legalBallsThisOver = snapshot.legalBallsThisOver;
+        history = snapshot.history.map((entry) => ({ ...entry }));
+        overHistory = snapshot.overHistory.map((entry) => ({
+          over: entry.over,
+          balls: [...entry.balls],
+        }));
+        currentOverBalls = [...snapshot.currentOverBalls];
+        matchReady = snapshot.matchReady;
+        matchComplete = snapshot.matchComplete;
+        lastBallLabel = snapshot.lastBallLabel;
+        render();
+        updateUndoButton();
+      }
+
+      function pushSnapshot() {
+        if (!matchReady || matchComplete) return;
+        undoStack.push(captureSnapshot());
+        if (undoStack.length > 20) undoStack.shift();
+        updateUndoButton();
+      }
+
+      function clearUndoStack() {
+        undoStack = [];
+        updateUndoButton();
+      }
+
+      function updateUndoButton() {
+        if (!undoBtn) return;
+        undoBtn.disabled = !undoStack.length;
+      }
 
       function resetMatchState() {
         runs = 0;
@@ -381,6 +437,7 @@
         lastBallLabel = "-";
         matchReady = false;
         matchComplete = false;
+        clearUndoStack();
       }
 
       function formatOvers(ballCount) {
@@ -502,6 +559,7 @@
       runButtons.forEach((button) => {
         button.addEventListener("click", () => {
           if (!requireReady()) return;
+          pushSnapshot();
           const value = Number(button.dataset.run);
           runs += value;
           pushBall(value === 0 ? "0" : value.toString(), value === 0 ? "dot" : "run", true);
@@ -514,6 +572,7 @@
       extraButtons.forEach((button) => {
         button.addEventListener("click", () => {
           if (!requireReady()) return;
+          pushSnapshot();
           const type = button.dataset.extra;
           if (type === "wide") {
             runs += 1;
@@ -531,6 +590,13 @@
             }
           }
         });
+      });
+
+      undoBtn?.addEventListener("click", () => {
+        if (!undoStack.length) return;
+        const snapshot = undoStack.pop();
+        restoreSnapshot(snapshot);
+        statusMessage.textContent = "Last ball undone.";
       });
 
       setOversBtn.addEventListener("click", () => {
